@@ -2,6 +2,10 @@
 
 A light way mock server that acts as a backend API for providing dummy response.
 
+> Still in very early developing stage. Nearly all features are under development. 
+> 
+> Any contribution is welcomed!
+
 ## Install
 
 ## Usage
