@@ -1,12 +1,12 @@
 from flask import Flask, request, make_response
 from .dispatcher import Dispatcher
-
+from .common import *
 
 class MockServer:
     """
     MockServer
     """
-    METHODS_ALLOWED = ["GET", "POST", "PUT", "DELETE"]
+    METHODS_ALLOWED = [GET, POST, PUT, DELETE]
 
     def __init__(self):
         ###
@@ -34,23 +34,24 @@ class MockServer:
         Entry function for Flask application
         """
         path = f"/{path}"
-        method = request.method
-        return self.dispatch.access(path)
+        method = request.method.upper()
+        return self.dispatch.access(method, path)
 
     def get(self, path, **arg):
-        return self.when("get", path, **arg)
+        return self.when(GET, path, **arg)
 
     def post(self, path, **arg):
-        return self.when("post", path, **arg)
+        return self.when(POST, path, **arg)
 
     def put(self, path, **arg):
-        return self.when("put", path, **arg)
+        return self.when(PUT, path, **arg)
 
     def delete(self, path, **arg):
-        return self.when("delete", path, **arg)
+        return self.when(DELETE, path, **arg)
 
     def when(self, method, path, status_code=200, body="Mock Server is running", header=None):
         """
         Store the response {method, path}: {status_code, body, header}
         """
-        self.dispatch.add(path, body)
+        method = method.upper()
+        self.dispatch.add(method, path, body)
