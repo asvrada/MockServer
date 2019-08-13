@@ -1,6 +1,7 @@
 from collections import defaultdict
 from .common import *
 
+# Assigned to the full, absolute path at the beginning of each add/access call
 tmp_fullpath = None
 
 class Dispatcher:
@@ -12,14 +13,13 @@ class Dispatcher:
 
     class RouteNode:
         def __init__(self):
-            self.has_response = False
+            # A dict contiaining request method to the response
+            # key: {GET, POST, PUT, DELETE}
+            # value: response
             self.response = {
-                GET: None,
-                POST: None,
-                PUT: None,
-                DELETE: None
             }
 
+            # A dict containing path to the RouteNode that handles that path
             # key: str
             # value: RouteNode
             self.routes = defaultdict(Dispatcher.RouteNode)
@@ -55,12 +55,11 @@ class Dispatcher:
 
             cur, path = self.get_first_route_in_path(path)
 
+            # end of recursion
             if cur == "":
-                # end of recursion
-                if self.has_response and self.response[method]:
+                if method in self.response:
                     raise BadRouteException(f'Failed to add new route: route "{method} {tmp_fullpath}" already exists.')
 
-                self.has_response = True
                 self.response[method] = payload
                 return self
 
@@ -79,15 +78,15 @@ class Dispatcher:
             """
             cur, path = self.get_first_route_in_path(path)
 
+            # end of recursion
             if cur == "":
-                # end of recursion
-                if not self.has_response or not self.response[method]:
-                    raise BadRouteException(f'Invalid request "{method} {tmp_fullpath}"')
+                if method not in self.response:
+                    raise BadRouteException(f'Invalid request method "{method} {tmp_fullpath}"')
 
                 return self.response[method]
 
             if cur not in self.routes:
-                raise BadRouteException(f'Invalid request: "{method} {tmp_fullpath}"')
+                raise BadRouteException(f'Invalid request path "{method} {tmp_fullpath}"')
 
             return self.routes[cur].access(method, path)
 
