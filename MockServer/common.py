@@ -1,0 +1,2 @@
+class BadRouteException(Exception):
+    pass
