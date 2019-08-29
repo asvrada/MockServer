@@ -1,4 +1,7 @@
-class BadRouteException(Exception):
+class BadRuleException(Exception):
+    pass
+
+class BadRequestException(Exception):
     pass
 
 GET = "GET"

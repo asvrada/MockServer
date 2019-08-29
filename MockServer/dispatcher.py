@@ -58,7 +58,7 @@ class Dispatcher:
             # end of recursion
             if cur == "":
                 if method in self.response:
-                    raise BadRouteException(f'Failed to add new route: route "{method} {tmp_fullpath}" already exists.')
+                    raise BadRequestException(f'Failed to add new route: route "{method} {tmp_fullpath}" already exists.')
 
                 self.response[method] = payload
                 return self
@@ -81,12 +81,12 @@ class Dispatcher:
             # end of recursion
             if cur == "":
                 if method not in self.response:
-                    raise BadRouteException(f'Invalid request method "{method} {tmp_fullpath}"')
+                    raise BadRequestException(f'Invalid request method "{method} {tmp_fullpath}"')
 
                 return self.response[method]
 
             if cur not in self.routes:
-                raise BadRouteException(f'Invalid request path "{method} {tmp_fullpath}"')
+                raise BadRequestException(f'Invalid request path "{method} {tmp_fullpath}"')
 
             return self.routes[cur].access(method, path)
 

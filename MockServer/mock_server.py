@@ -55,7 +55,7 @@ class MockServer:
         """
         method = method.upper()
 
-        if method not in [GET, POST, PUT, DELETE]:
-            raise BadRouteException(f"Invalid method '{method}', must be one of {[GET, POST, PUT, DELETE]}")
+        if method not in self.METHODS_ALLOWED:
+            raise BadRuleException(f"Invalid method '{method}', must be one of {self.METHODS_ALLOWED}")
 
         self.dispatch.add(method, path, body)
