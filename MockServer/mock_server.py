@@ -49,9 +49,13 @@ class MockServer:
     def delete(self, path, **arg):
         return self.when(DELETE, path, **arg)
 
-    def when(self, method, path, status_code=200, body="Mock Server is running", header=None):
+    def when(self, method, path, status_code=200, body="Default response: MockServer is running", header=None):
         """
         Store the response {method, path}: {status_code, body, header}
         """
         method = method.upper()
+
+        if method not in [GET, POST, PUT, DELETE]:
+            raise BadRouteException(f"Invalid method '{method}', must be one of {[GET, POST, PUT, DELETE]}")
+
         self.dispatch.add(method, path, body)

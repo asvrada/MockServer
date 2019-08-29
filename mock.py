@@ -15,4 +15,6 @@ server.get("/api", body={
     "entry": ["user", "admin"]
 })
 
+server.when("DELETE", "/delete")
+
 server.run(port=8080)
