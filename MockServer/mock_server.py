@@ -6,7 +6,6 @@ class MockServer:
     """
     MockServer
     """
-    METHODS_ALLOWED = [GET, POST, PUT, DELETE]
 
     def __init__(self):
         ###
@@ -23,8 +22,8 @@ class MockServer:
         ###
         # Manually apply the app.route decorator
         # So self.flask_index can handle messages received sent to Flask server
-        self.flask_index = self.app.route("/", defaults={'path': ""}, methods=self.METHODS_ALLOWED)(self.flask_index)
-        self.flask_index = self.app.route("/<path:path>", methods=self.METHODS_ALLOWED)(self.flask_index)
+        self.flask_index = self.app.route("/", defaults={'path': ""}, methods=METHODS_ALLOWED)(self.flask_index)
+        self.flask_index = self.app.route("/<path:path>", methods=METHODS_ALLOWED)(self.flask_index)
 
     def run(self, port=5555):
         self.app.run(port=port)
@@ -35,7 +34,11 @@ class MockServer:
         """
         path = f"/{path}"
         method = request.method.upper()
-        return self.dispatch.access(method, path)
+
+        try:
+            return self.dispatch.access(method, path)
+        except BadRequestException as e:
+            return str(e)
 
     def get(self, path, **arg):
         return self.when(GET, path, **arg)
@@ -55,7 +58,10 @@ class MockServer:
         """
         method = method.upper()
 
-        if method not in self.METHODS_ALLOWED:
-            raise BadRuleException(f"Invalid method '{method}', must be one of {self.METHODS_ALLOWED}")
+        try:
+            if method not in METHODS_ALLOWED:
+                raise BadRuleException(f"Invalid method '{method}', must be one of {METHODS_ALLOWED}")
 
-        self.dispatch.add(method, path, body)
+            self.dispatch.add(method, path, body)
+        except BadRuleException as e:
+            return str(e)
