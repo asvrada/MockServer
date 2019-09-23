@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, jsonify
 from .dispatcher import Dispatcher
 from .common import *
 
@@ -35,10 +35,21 @@ class MockServer:
         path = f"/{path}"
         method = request.method.upper()
 
+        payload = None
+
         try:
-            return self.dispatch.access(method, path)
+            payload = self.dispatch.access(method, path)
         except BadRequestException as e:
-            return str(e)
+            payload = str(e)
+
+        if type(payload) is not str:
+            payload = jsonify(payload)
+
+        response = make_response(payload)
+        
+        response.headers['Content-Type'] = "application/json"
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        return response
 
     def get(self, path, **arg):
         return self.when(GET, path, **arg)
