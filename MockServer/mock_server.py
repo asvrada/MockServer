@@ -31,21 +31,25 @@ class MockServer:
     def flask_index(self, path):
         """
         Entry function for Flask application
+        Try to fetch the correct payload and make a resposne
         """
         path = f"/{path}"
         method = request.method.upper()
 
-        payload = None
+        payload, code = None, 200
 
         try:
             payload = self.dispatch.access(method, path)
         except BadRequestException as e:
-            payload = str(e)
+            payload = {
+                'error': str(e)
+            }
+            code = 404
 
         if type(payload) is not str:
             payload = jsonify(payload)
 
-        response = make_response(payload)
+        response = make_response(payload, code)
         
         response.headers['Content-Type'] = "application/json"
         response.headers['Access-Control-Allow-Origin'] = '*'
