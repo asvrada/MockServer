@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, make_response, jsonify
 from .dispatcher import Dispatcher
 from .common import *
@@ -35,6 +36,11 @@ class MockServer:
         """
         path = f"/{path}"
         method = request.method.upper()
+
+        # print payload
+        if request.data:
+            print(">>>")
+            print(json.loads(request.data))
 
         payload, code = None, 200
 
