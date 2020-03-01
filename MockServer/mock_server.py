@@ -76,6 +76,11 @@ class MockServer:
     def when(self, method, path, status_code=200, body="Default response: MockServer is running", header=None):
         """
         Store the response {method, path}: {status_code, body, header}
+        :param method: {str} type of the request, one of METHODS_ALLOW
+        :param path: {str} path to the endpoint
+        :param status_code: {int} the status code of response
+        :param body: {Any} the return body of response
+        :param header: {dict} NOT USED
         """
         method = method.upper()
 
