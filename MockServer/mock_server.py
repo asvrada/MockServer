@@ -1,5 +1,7 @@
 import json
 from flask import Flask, request, make_response, jsonify
+from flask_cors import CORS
+
 from .dispatcher import Dispatcher
 from .common import *
 
@@ -14,6 +16,7 @@ class MockServer:
         ###
         # The Flask app instance
         self.app = Flask(__name__)
+        CORS(self.app)
 
         # Map of entry and response
         self.dispatch = Dispatcher()
